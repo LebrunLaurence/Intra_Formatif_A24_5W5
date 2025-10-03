@@ -6,18 +6,25 @@
 
 <h1>Formulaire qui sert à rien</h1>
 <mat-card style="width: 700px; margin: auto; padding: 20px;">
-  <form >
+  <form [formGroup]="loginForm">
 
     <mat-form-field style="width: 100%">
         <mat-label>Nom</mat-label>
-        <input matInput type="text" placeholder="Nom et prénom" name="name" >
-        
+        <input matInput type="text" placeholder="Nom et prénom" name="name" formControlName="nom" >
+        @if(loginForm.get('nom')?.hasError('required')) {
+    <mat-error> Le nom est requis </mat-error>
+    }
     </mat-form-field>
 
     <mat-form-field style="width: 100%">
       <mat-label>Numéro de rue</mat-label>
-      <input matInput type="number" placeholder="5230" name="roadnumber">
-      
+      <input matInput type="number" placeholder="5230" name="roadnumber" formControlName="roadNumber">
+      @if(loginForm.get('roadNumber')?.hasError('required')) {
+    <mat-error> Le numéro du rue est requis </mat-error>
+    }
+    @if(!loginForm.get('roadNumber')?.hasError('required') && loginForm.get('roadNumber')?.hasError('min') || loginForm.get('roadNumber')?.hasError('max')) {
+    <mat-error> Le numéro de rue doit être entre 1000 et 9999 </mat-error>
+    }
     </mat-form-field>
 
     <mat-form-field style="width: 100%">
@@ -27,18 +34,24 @@
 
     <mat-form-field style="width: 100%">
       <mat-label>Code Postal</mat-label>
-      <input matInput type="text" placeholder="H2J8B2" name="postalcode">
-      
+      <input matInput type="text" placeholder="H2J8B2" name="postalcode" formControlName="postalCode">
+      @if(loginForm.get('postalCode')?.hasError('pattern')) {
+    <mat-error> Le code postal n'est pas valide </mat-error>
+    }
     </mat-form-field>
 
     <mat-form-field style="width: 100%">
       <mat-label>Commentaire</mat-label>
-      <textarea matInput placeholder="Votre commentaire" name="comments"></textarea>
-      
+      <textarea matInput placeholder="Votre commentaire" name="comments" formControlName="commentaire"></textarea>
+      @if(loginForm.get('commentaire')?.hasError('est10mots')) {
+    <mat-error> Le commentaire doit être au moins 10 mots </mat-error>
+    }
     </mat-form-field>
-
+    @if(loginForm.get('commentaire')?.value != "" && !loginForm.get('nom')?.hasError('required') && loginForm.hasError('contientNom') ) {
+    <mat-error> Le nom ne doit pas être dans le commentaire </mat-error>
+    }
     <mat-card-actions align="end">
-      <button  mat-raised-button color="primary" >Acheter</button>
+      <button  mat-raised-button color="primary" [disabled]="!loginForm.valid">Acheter</button>
     </mat-card-actions>
   </form>
 </mat-card>
